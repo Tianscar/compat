@@ -21,12 +21,14 @@
  *  Date: 2000-12-02
  */
 
+#ifndef _MSC_VER
+#error The compiler is not MSVC!
+#endif
 
 #ifndef _STDINT_H
 #define _STDINT_H
 
-#if _MSC_VER >= 1800
-/* MSVC >= 2013 has stdint.h  */
+#ifndef COMPAT_MSVC99
 #include <stdint.h>
 #else
 
@@ -213,6 +215,6 @@ typedef unsigned long long   uintmax_t;
 
 #endif  /* !defined ( __cplusplus) || defined __STDC_CONSTANT_MACROS */
 
-#endif  /* _MSC_VER */
+#endif  /* COMPAT_MSVC99 */
 
 #endif  /* _STDINT_H */

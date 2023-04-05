@@ -2,6 +2,11 @@
 #define COMPAT_TYPES_H
 
 #ifdef _MSC_VER
+#ifndef COMPAT_MSVC99
+#if _MSC_VER < 0x0708
+#define COMPAT_MSVC99 1
+#endif
+#endif
 #include "msvc/inttypes.h"
 #include "msvc/stdbool.h"
 #else

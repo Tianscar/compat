@@ -5,11 +5,14 @@
  */
 /* 7.8 Format conversion of integer types <inttypes.h> */
 
+#ifndef _MSC_VER
+#error The compiler is not MSVC!
+#endif
+
 #ifndef _INTTYPES_H_
 #define _INTTYPES_H_
 
-#if _MSC_VER >= 1800
-/* MSVC >= 2013 has inttypes.h  */
+#ifndef COMPAT_MSVC99
 #include <inttypes.h>
 #else
 
@@ -352,5 +355,5 @@ uintmax_t __cdecl wcstoumax (const wchar_t* __restrict__ nptr,
 }
 #endif
 
-#endif /* def _MSC_VER */
+#endif /* ndef COMPAT_MSVC99 */
 #endif /* ndef _INTTYPES_H */

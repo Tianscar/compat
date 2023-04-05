@@ -4,11 +4,14 @@
  * No warranty is given; refer to the file DISCLAIMER.PD within this package.
  */
 
+#ifndef _MSC_VER
+#error The compiler is not MSVC!
+#endif
+
 #ifndef _INC_STDDEF
 #define _INC_STDDEF
 
-#if _MSC_VER >= 1800
-/* MSVC >= 2013 has stddef.h  */
+#ifndef COMPAT_MSVC99
 #include <stddef.h>
 #else
 
@@ -34,6 +37,7 @@ extern "C" {
 }
 #endif
 
+#endif /* COMPAT_MSVC99 */
 #endif /* _INC_STDDEF */
 
 /*
@@ -434,8 +438,6 @@ typedef struct {
 #endif /* C11 or C++11.  */
 
 #endif /* _STDDEF_H was defined this time.  */
-
-#endif /* _MSC_VER */
 
 #endif /* !_STDDEF_H && !_STDDEF_H_ && !_ANSI_STDDEF_H && !__STDDEF_H__
 	  || __need_XXX was not defined before */
