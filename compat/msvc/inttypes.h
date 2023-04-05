@@ -17,9 +17,9 @@
 #else
 
 #include <crtdefs.h>
-#include <stdint.h>
+#include "stdint.h"
 #define __need_wchar_t
-#include <stddef.h>
+#include "stddef.h"
 
 #ifdef	__cplusplus
 extern	"C"	{
