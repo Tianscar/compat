@@ -29,4 +29,4 @@
 #define __bool_true_false_are_defined	1
 
 #endif  /* COMPAT_MSVC99 */
-#endif	/* stdbool.h */
+#endif	/* _STDBOOL_H */

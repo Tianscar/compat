@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 add_compile_definitions(COMPAT_DLLEXPORT)
+add_compile_definitions(COMPAT_MSVC99)
 
 project(types_test C)
 

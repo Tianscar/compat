@@ -412,7 +412,7 @@ typedef __WCHAR_TYPE__ wchar_t;
 #else
 #define NULL 0LL
 #endif  /* W64 */
-#endif  /* C++ */
+#endif  /* __cplusplus */
 #endif  /* G++ */
 #endif	/* NULL not defined and <stddef.h> or need NULL.  */
 #undef	__need_NULL
