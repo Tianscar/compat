@@ -1,4 +1,4 @@
-#ifdef COMPAT_MSVC99_TYPESFUNC
+#ifdef COMPAT_INTTYPES_FUNCTIONS
 
 #include <stdlib.h>
 #include <wchar.h>

@@ -2,19 +2,24 @@
 A set of utilities for C99, for cross-platform compatibility.
 
 ## Usage
-Copy [the files](/compat) to your project and `#include` them.
+Copy [the files](/compat) to your project and `#include` them. `#include` [compat.h](compat/compat.h) to include all of them.  
+Do not forget to reading the [Notes](#notes) below!
 
 ## Notes
-### MSVC
+### Windows
 #### dllexport
-You need to define `COMPAT_DLLEXPORT` if you're building an executable or shared library.
-#### C99
-For `_MSC_VER` < 1800, `COMPAT_MSVC99` macro is automatically defined in `types.h`, to enable the C99 compatibility for MSVC.  
-You can also define it manually if you don't want to link against any c runtime library except `msvcrt.dll`.  
-Under the conditions above, if you want to use functions defined in `inttypes.h` (i.e. `imaxabs`), 
-you need to define `COMPAT_MSVC99_TYPESFUNC` macro and add `inttypes.c` to your source file list.
+You need to define `COMPAT_DLLEXPORT` macro if you're building an executable or shared library.
 #### UCRT
-You need to define `COMPAT_UCRT` macro if you link your executable or library against `Microsoft Universal C Runtime (UCRT)`.
+You need to define `COMPAT_UCRT` macro if you're linking your executable or library against [Universal C Runtime (UCRT)](https://learn.microsoft.com/en-us/cpp/windows/universal-crt-deployment).
+### MSVC
+#### C99 standard types
+For `_MSC_VER` < 1800, `COMPAT_TYPES` macro is automatically defined in [types.h](/compat/types.h), to enable the C99 standard types compatibility for MSVC.  
+You can also define it manually if you don't want to link against any c runtime library except `msvcrt.dll`.  
+Under the conditions above, if you want to use functions defined in [inttypes.h](/compat/msvc/inttypes.h) (e.g. `imaxabs`),
+you need to define `COMPAT_INTTYPES_FUNCTIONS` macro and add [inttypes.c](/compat/msvc/inttypes.c) to your source file list.
+#### RegExp
+If you want to use [regex.h](/compat/regex.h), you need to define `COMPAT_REGEX` macro
+and add [regex.c](compat/msvc/regex.c) to your source file list.
 
 ## License
 [The Unlicense (Public Domain Equivalent)](/LICENSE)

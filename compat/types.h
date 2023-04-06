@@ -2,13 +2,13 @@
 #define COMPAT_TYPES_H
 
 #ifdef _MSC_VER
-#ifndef COMPAT_MSVC99
+#ifndef COMPAT_TYPES
 #if _MSC_VER < 0x0708
-#define COMPAT_MSVC99 1
+#define COMPAT_TYPES 1
 #endif
 #endif
 #endif
-#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(__WIN32__)) && defined(COMPAT_MSVC99)
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(__WIN32__)) && defined(COMPAT_TYPES)
 #include "msvc/stddef.h"
 #include "msvc/inttypes.h"
 #include "msvc/stdbool.h"
