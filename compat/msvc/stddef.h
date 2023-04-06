@@ -4,42 +4,6 @@
  * No warranty is given; refer to the file DISCLAIMER.PD within this package.
  */
 
-#ifndef _MSC_VER
-#error The compiler is not MSVC!
-#endif
-
-#ifndef _INC_STDDEF
-#define _INC_STDDEF
-
-#ifndef COMPAT_MSVC99
-#include <stddef.h>
-#else
-
-#include <crtdefs.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#ifndef _CRT_ERRNO_DEFINED
-#define _CRT_ERRNO_DEFINED
-  _CRTIMP extern int *__cdecl _errno(void);
-#define errno (*_errno())
-  errno_t __cdecl _set_errno(int _Value);
-  errno_t __cdecl _get_errno(int *_Value);
-#endif /* _CRT_ERRNO_DEFINED */
-
-  _CRTIMP extern unsigned long __cdecl __threadid(void);
-#define _threadid (__threadid())
-  _CRTIMP extern uintptr_t __cdecl __threadhandle(void);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* COMPAT_MSVC99 */
-#endif /* _INC_STDDEF */
-
 /*
  * ISO C Standard:  7.17  Common definitions  <stddef.h>
  */
@@ -419,8 +383,13 @@ typedef __WCHAR_TYPE__ wchar_t;
 
 #ifdef _STDDEF_H
 
+#ifdef __cplusplus
 /* Offset of member MEMBER in a struct of type TYPE. */
-#define offsetof(TYPE, MEMBER) __builtin_offsetof (TYPE, MEMBER)
+#define offsetof(TYPE, MEMBER) (size_t)&reinterpret_cast<const volatile char&>((((TYPE *)0)->MEMBER))
+#else
+/* Offset of member MEMBER in a struct of type TYPE. */
+#define offsetof(TYPE, MEMBER) ((size_t) ( (char *)&((TYPE *)(0))->MEMBER - (char *)0 ))
+#endif
 
 #if (defined (__STDC_VERSION__) && __STDC_VERSION__ >= 201112L) \
   || (defined(__cplusplus) && __cplusplus >= 201103L)
@@ -431,8 +400,8 @@ typedef __WCHAR_TYPE__ wchar_t;
    as great as that of any standard type not using alignment
    specifiers.  */
 typedef struct {
-  long long __max_align_ll __attribute__((__aligned__(__alignof__(long long))));
-  long double __max_align_ld __attribute__((__aligned__(__alignof__(long double))));
+  __declspec(align(sizeof(long long))) long long __max_align_ll;
+  __declspec(align(sizeof(long double))) long double __max_align_ld;
 } max_align_t;
 #endif
 #endif /* C11 or C++11.  */

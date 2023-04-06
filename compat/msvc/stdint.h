@@ -21,18 +21,9 @@
  *  Date: 2000-12-02
  */
 
-#ifndef _MSC_VER
-#error The compiler is not MSVC!
-#endif
 
 #ifndef _STDINT_H
 #define _STDINT_H
-
-#ifndef COMPAT_MSVC99
-#include <stdint.h>
-#else
-
-#include <crtdefs.h>
 
 #define __need_wint_t
 #define __need_wchar_t
@@ -214,7 +205,5 @@ typedef unsigned long long   uintmax_t;
 #define UINTMAX_C(val) val##ULL
 
 #endif  /* !defined ( __cplusplus) || defined __STDC_CONSTANT_MACROS */
-
-#endif  /* COMPAT_MSVC99 */
 
 #endif  /* _STDINT_H */

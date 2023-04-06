@@ -2,16 +2,8 @@
  * ISO C Standard:  7.16  Boolean type and values  <stdbool.h>
  */
 
-#ifndef _MSC_VER
-#error The compiler is not MSVC!
-#endif
-
 #ifndef _STDBOOL_H
 #define _STDBOOL_H
-
-#ifndef COMPAT_MSVC99
-#include <stdbool.h>
-#else
 
 #ifndef __cplusplus
 
@@ -28,5 +20,4 @@
 /* Signal that all the definitions are present.  */
 #define __bool_true_false_are_defined	1
 
-#endif  /* COMPAT_MSVC99 */
 #endif	/* _STDBOOL_H */

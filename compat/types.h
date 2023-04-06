@@ -7,6 +7,9 @@
 #define COMPAT_MSVC99 1
 #endif
 #endif
+#endif
+#ifdef COMPAT_MSVC99
+#include "msvc/stddef.h"
 #include "msvc/inttypes.h"
 #include "msvc/stdbool.h"
 #else
