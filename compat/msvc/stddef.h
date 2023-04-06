@@ -378,12 +378,14 @@ typedef __WCHAR_TYPE__ wchar_t;
 
 #ifdef _STDDEF_H
 
+#ifndef offsetof
 #ifdef __cplusplus
 /* Offset of member MEMBER in a struct of type TYPE. */
 #define offsetof(TYPE, MEMBER) (size_t)&reinterpret_cast<const volatile char&>((((TYPE *)0)->MEMBER))
 #else
 /* Offset of member MEMBER in a struct of type TYPE. */
 #define offsetof(TYPE, MEMBER) ((size_t) ( (char *)&((TYPE *)(0))->MEMBER - (char *)0 ))
+#endif
 #endif
 
 #if (defined (__STDC_VERSION__) && __STDC_VERSION__ >= 201112L) \

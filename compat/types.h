@@ -46,4 +46,12 @@
 #define COMPAT_INLINE static
 #endif
 
+#ifdef __GNUC__
+#define COMPAT_RESTRICT __restrict__
+#elif defined(_MSC_VER)
+#define COMPAT_RESTRICT __restrict
+#else
+#define COMPAT_RESTRICT
+#endif
+
 #endif //COMPAT_TYPES_H
