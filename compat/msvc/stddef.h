@@ -1,12 +1,7 @@
-/**
- * This file has no copyright assigned and is placed in the Public Domain.
- * This file is part of the mingw-w64 runtime package.
- * No warranty is given; refer to the file DISCLAIMER.PD within this package.
- */
-
 /*
  * ISO C Standard:  7.17  Common definitions  <stddef.h>
  */
+
 #if (!defined(_STDDEF_H) && !defined(_STDDEF_H_) && !defined(_ANSI_STDDEF_H) \
      && !defined(__STDDEF_H__)) \
     || defined(__need_wchar_t) || defined(__need_size_t) \
@@ -68,8 +63,8 @@
 
 /* On VxWorks, <type/vxTypesBase.h> may have defined macros like
    _TYPE_size_t which will typedef size_t.  fixincludes patched the
-   vxTypesBase.h so that this macro is only defined if _GCC_SIZE_T is
-   not defined, and so that defining this macro defines _GCC_SIZE_T.
+   vxTypesBase.h so that this macro is only defined if COMPAT_SIZE_T is
+   not defined, and so that defining this macro defines COMPAT_SIZE_T.
    If we find that the macros are still defined at this point, we must
    invoke them so that the type is defined as expected.  */
 #if defined (_TYPE_ptrdiff_t) && (defined (__need_ptrdiff_t) || defined (_STDDEF_H_))
@@ -103,7 +98,7 @@ _TYPE_wchar_t;
 #ifndef _PTRDIFF_T_
 #ifndef _BSD_PTRDIFF_T_
 #ifndef ___int_ptrdiff_t_h
-#ifndef _GCC_PTRDIFF_T
+#ifndef COMPAT_PTRDIFF_T
 #define _PTRDIFF_T
 #define _T_PTRDIFF_
 #define _T_PTRDIFF
@@ -111,7 +106,7 @@ _TYPE_wchar_t;
 #define _PTRDIFF_T_
 #define _BSD_PTRDIFF_T_
 #define ___int_ptrdiff_t_h
-#define _GCC_PTRDIFF_T
+#define COMPAT_PTRDIFF_T
 #ifndef __PTRDIFF_TYPE__
 #ifdef _WIN64
 #define __PTRDIFF_TYPE__ long long int
@@ -123,7 +118,7 @@ _TYPE_wchar_t;
 #define _PTRDIFF_T_DEFINED
 typedef __PTRDIFF_TYPE__ ptrdiff_t;
 #endif
-#endif /* _GCC_PTRDIFF_T */
+#endif /* COMPAT_PTRDIFF_T */
 #endif /* ___int_ptrdiff_t_h */
 #endif /* _BSD_PTRDIFF_T_ */
 #endif /* _PTRDIFF_T_ */
@@ -156,7 +151,7 @@ typedef __PTRDIFF_TYPE__ ptrdiff_t;
 #ifndef _BSD_SIZE_T_DEFINED_	/* Darwin */
 #ifndef _SIZE_T_DECLARED	/* FreeBSD 5 */
 #ifndef ___int_size_t_h
-#ifndef _GCC_SIZE_T
+#ifndef COMPAT_SIZE_T
 #ifndef _SIZET_
 #ifndef __size_t
 #define __size_t__	/* BeOS */
@@ -173,7 +168,7 @@ typedef __PTRDIFF_TYPE__ ptrdiff_t;
 #define _BSD_SIZE_T_DEFINED_	/* Darwin */
 #define _SIZE_T_DECLARED	/* FreeBSD 5 */
 #define ___int_size_t_h
-#define _GCC_SIZE_T
+#define COMPAT_SIZE_T
 #define _SIZET_
 #if defined (__FreeBSD__) && (__FreeBSD__ >= 5)
 /* __size_t is a typedef on FreeBSD 5!, must not trash it. */
@@ -195,7 +190,7 @@ typedef long ssize_t;
 #endif /* !(defined (__GNUG__) && defined (size_t)) */
 #endif /* __size_t */
 #endif /* _SIZET_ */
-#endif /* _GCC_SIZE_T */
+#endif /* COMPAT_SIZE_T */
 #endif /* ___int_size_t_h */
 #endif /* _SIZE_T_DECLARED */
 #endif /* _BSD_SIZE_T_DEFINED_ */
@@ -238,7 +233,7 @@ typedef long ssize_t;
 #ifndef _WCHAR_T_H
 #ifndef ___int_wchar_t_h
 #ifndef __INT_WCHAR_T_H
-#ifndef _GCC_WCHAR_T
+#ifndef COMPAT_WCHAR_T
 #define __wchar_t__	/* BeOS */
 #define __WCHAR_T__	/* Cray Unicos/Mk */
 #define _WCHAR_T
@@ -252,7 +247,7 @@ typedef long ssize_t;
 #define _WCHAR_T_H
 #define ___int_wchar_t_h
 #define __INT_WCHAR_T_H
-#define _GCC_WCHAR_T
+#define COMPAT_WCHAR_T
 #define _WCHAR_T_DECLARED
 
 /* On BSD/386 1.1, at least, machine/ansi.h defines _BSD_WCHAR_T_
@@ -330,30 +325,30 @@ typedef __WCHAR_TYPE__ wchar_t;
     are already defined.  */
 /*  BSD/OS 3.1 and FreeBSD [23].x require the MACHINE_ANSI_H check here.  */
 #if defined(_ANSI_H_) || defined(_MACHINE_ANSI_H_)
-/*  The references to _GCC_PTRDIFF_T_, _GCC_SIZE_T_, and _GCC_WCHAR_T_
+/*  The references to COMPAT_PTRDIFF_T_, COMPAT_SIZE_T_, and COMPAT_WCHAR_T_
     are probably typos and should be removed before 2.8 is released.  */
-#ifdef _GCC_PTRDIFF_T_
+#ifdef COMPAT_PTRDIFF_T_
 #undef _PTRDIFF_T_
 #undef _BSD_PTRDIFF_T_
 #endif
-#ifdef _GCC_SIZE_T_
+#ifdef COMPAT_SIZE_T_
 #undef _SIZE_T_
 #undef _BSD_SIZE_T_
 #endif
-#ifdef _GCC_WCHAR_T_
+#ifdef COMPAT_WCHAR_T_
 #undef _WCHAR_T_
 #undef _BSD_WCHAR_T_
 #endif
 /*  The following ones are the real ones.  */
-#ifdef _GCC_PTRDIFF_T
+#ifdef COMPAT_PTRDIFF_T
 #undef _PTRDIFF_T_
 #undef _BSD_PTRDIFF_T_
 #endif
-#ifdef _GCC_SIZE_T
+#ifdef COMPAT_SIZE_T
 #undef _SIZE_T_
 #undef _BSD_SIZE_T_
 #endif
-#ifdef _GCC_WCHAR_T
+#ifdef COMPAT_WCHAR_T
 #undef _WCHAR_T_
 #undef _BSD_WCHAR_T_
 #endif
@@ -393,9 +388,8 @@ typedef __WCHAR_TYPE__ wchar_t;
 
 #if (defined (__STDC_VERSION__) && __STDC_VERSION__ >= 201112L) \
   || (defined(__cplusplus) && __cplusplus >= 201103L)
-#if !defined(_GCC_MAX_ALIGN_T) && !defined(__CLANG_MAX_ALIGN_T_DEFINED)
-#define _GCC_MAX_ALIGN_T
-#define __CLANG_MAX_ALIGN_T_DEFINED
+#ifndef COMPAT_MAX_ALIGN_T
+#define COMPAT_MAX_ALIGN_T
 /* Type whose alignment is supported in every context and is at least
    as great as that of any standard type not using alignment
    specifiers.  */

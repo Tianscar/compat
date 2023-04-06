@@ -1,9 +1,6 @@
-/**
- * This file has no copyright assigned and is placed in the Public Domain.
- * This file is part of the mingw-w64 runtime package.
- * No warranty is given; refer to the file DISCLAIMER.PD within this package.
+/*
+ * ISO C9x  7.8 Format conversion of integer types <inttypes.h>
  */
-/* 7.8 Format conversion of integer types <inttypes.h> */
 
 #ifndef _INTTYPES_H_
 #define _INTTYPES_H_
@@ -29,14 +26,14 @@ typedef struct {
  * but understood by MS runtime functions.
  * crtdll.dll and msvcrt10.dll do not support any 64-bit modifier.
  */
-#if defined(_UCRT) || __USE_MINGW_ANSI_STDIO
+#ifdef COMPAT_UCRT
 #define PRId64 "lld"
 #define PRIi64 "lli"
 #define PRIo64 "llo"
 #define PRIu64 "llu"
 #define PRIx64 "llx"
 #define PRIX64 "llX"
-#elif !defined(__CRTDLL__) && __MSVCRT_VERSION__ >= 0x200
+#elif _MSC_VER >= 0x200
 #define PRId64 "I64d"
 #define PRIi64 "I64i"
 #define PRIo64 "I64o"
@@ -249,7 +246,7 @@ typedef struct {
  #define SCNuPTR "u"
 #endif
 
-#if defined(_UCRT) || __USE_MINGW_ANSI_STDIO
+#ifdef COMPAT_UCRT
 /*
  * no length modifier for char types prior to C9x
  * MS runtime  scanf appears to treat "hh" as "h" 
@@ -276,9 +273,9 @@ typedef struct {
 #define SCNu8 "hhu"
 #define SCNuLEAST8 "hhu"
 #define SCNuFAST8 "hhu"
-#endif /* __STDC_VERSION__ >= 199901 */
+#endif /* COMPAT_UCRT */
 
-#if (defined(__CRTDLL__) || __MSVCRT_VERSION__ < 0x200) && __USE_MINGW_ANSI_STDIO == 0
+#if _MSC_VER < 0x200
 /*
  * crtdll.dll and msvcrt10.dll do not support any 64-bit modifier.
  * Undef all previously defined 64-bit modifiers.
