@@ -8,7 +8,7 @@
 #endif
 #endif
 #endif
-#ifdef COMPAT_MSVC99
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(__WIN32__)) && defined(COMPAT_MSVC99)
 #include "msvc/stddef.h"
 #include "msvc/inttypes.h"
 #include "msvc/stdbool.h"
