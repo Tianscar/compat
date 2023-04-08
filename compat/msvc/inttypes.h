@@ -320,7 +320,7 @@ typedef struct {
 #undef SCNuMAX
 #endif
 
-#ifdef COMPAT_INTTYPES_FUNCTIONS
+#if defined(__GNUC__) || defined(COMPAT_INTTYPES_FUNCTIONS)
 
 intmax_t __cdecl imaxabs (intmax_t j);
 imaxdiv_t __cdecl imaxdiv (intmax_t numer, intmax_t denom);
@@ -337,7 +337,7 @@ intmax_t __cdecl wcstoimax (const wchar_t* __restrict nptr,
 uintmax_t __cdecl wcstoumax (const wchar_t* __restrict nptr,
                      wchar_t** __restrict endptr, int base);
 
-#endif /* def COMPAT_INTTYPES_FUNCTIONS */
+#endif /* __GNUC__ || COMPAT_INTTYPES_FUNCTIONS */
 
 #ifdef	__cplusplus
 }

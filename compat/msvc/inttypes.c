@@ -6,6 +6,7 @@
 
 #include "inttypes.h"
 
+#ifndef __GNUC__
 intmax_t __cdecl imaxabs (intmax_t j) {
     return j >= 0 ? j : -j;
 }
@@ -52,14 +53,14 @@ imaxdiv_t __cdecl imaxdiv (intmax_t numer, intmax_t denom) {
 
 intmax_t __cdecl strtoimax (const char* __restrict nptr,
                     char** __restrict endptr, int base) {
-    assert (sizeof (intmax_t) == sizeof (unsigned long int) || sizeof (intmax_t) == sizeof (unsigned long long int));
+    assert (sizeof (intmax_t) == sizeof (unsigned long int) || sizeof (intmax_t) == sizeof (unsigned __int64));
 
     if (sizeof (intmax_t) != sizeof (unsigned long int)) return strtoll(nptr, endptr, base);
     return strtol(nptr, endptr, base);
 }
 uintmax_t __cdecl strtoumax (const char* __restrict nptr,
                      char** __restrict endptr, int base) {
-    assert (sizeof (uintmax_t) == sizeof (unsigned long int) || sizeof (uintmax_t) == sizeof (unsigned long long int));
+    assert (sizeof (uintmax_t) == sizeof (unsigned long int) || sizeof (uintmax_t) == sizeof (unsigned __int64));
 
     if (sizeof (uintmax_t) != sizeof (unsigned long int)) return strtoull(nptr, endptr, base);
     return strtoul(nptr, endptr, base);
@@ -67,17 +68,19 @@ uintmax_t __cdecl strtoumax (const char* __restrict nptr,
 
 intmax_t __cdecl wcstoimax (const wchar_t* __restrict nptr,
                     wchar_t** __restrict endptr, int base) {
-    assert (sizeof (intmax_t) == sizeof (unsigned long int) || sizeof (intmax_t) == sizeof (unsigned long long int));
+    assert (sizeof (intmax_t) == sizeof (unsigned long int) || sizeof (intmax_t) == sizeof (unsigned __int64));
 
     if (sizeof (intmax_t) != sizeof (unsigned long int)) return wcstoll(nptr, endptr, base);
     return wcstol(nptr, endptr, base);
 }
 uintmax_t __cdecl wcstoumax (const wchar_t* __restrict nptr,
                      wchar_t** __restrict endptr, int base) {
-    assert (sizeof (uintmax_t) == sizeof (unsigned long int) || sizeof (uintmax_t) == sizeof (unsigned long long int));
+    assert (sizeof (uintmax_t) == sizeof (unsigned long int) || sizeof (uintmax_t) == sizeof (unsigned __int64));
 
     if (sizeof (uintmax_t) != sizeof (unsigned long int)) return wcstoull(nptr, endptr, base);
     return wcstoul(nptr, endptr, base);
 }
+
+#endif
 
 #endif

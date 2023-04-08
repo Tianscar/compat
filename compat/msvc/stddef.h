@@ -109,7 +109,7 @@ _TYPE_wchar_t;
 #define COMPAT_PTRDIFF_T
 #ifndef __PTRDIFF_TYPE__
 #ifdef _WIN64
-#define __PTRDIFF_TYPE__ long long int
+#define __PTRDIFF_TYPE__ __int64
 #else
 #define __PTRDIFF_TYPE__ long int
 #endif
@@ -177,7 +177,7 @@ typedef __PTRDIFF_TYPE__ ptrdiff_t;
 #endif
 #ifndef __SIZE_TYPE__
 #ifdef _WIN64
-#define __SIZE_TYPE__ long long unsigned int
+#define __SIZE_TYPE__ __int64 unsigned
 #else
 #define __SIZE_TYPE__ long unsigned int
 #endif
@@ -378,7 +378,7 @@ typedef __WCHAR_TYPE__ wchar_t;
 
 #ifdef _STDDEF_H
 
-#ifndef offsetof
+#if !defined(COMPAT_UCRT) && !defined(offsetof)
 #ifdef __cplusplus
 /* Offset of member MEMBER in a struct of type TYPE. */
 #define offsetof(TYPE, MEMBER) (size_t)&reinterpret_cast<const volatile char&>((((TYPE *)0)->MEMBER))
@@ -396,7 +396,7 @@ typedef __WCHAR_TYPE__ wchar_t;
    as great as that of any standard type not using alignment
    specifiers.  */
 typedef struct {
-  __declspec(align(sizeof(long long))) long long __max_align_ll;
+  __declspec(align(sizeof(__int64))) __int64 __max_align_ll;
   __declspec(align(sizeof(long double))) long double __max_align_ld;
 } max_align_t;
 #endif

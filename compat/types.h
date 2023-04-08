@@ -3,7 +3,7 @@
 
 #ifdef _MSC_VER
 #ifndef COMPAT_TYPES
-#if _MSC_VER < 0x0708
+#if _MSC_VER < 0x708
 #define COMPAT_TYPES 1
 #endif
 #endif
@@ -18,14 +18,21 @@
 #include <stdbool.h>
 #endif
 
-#if defined(__GNUC__) && __GNUC__ >= 4
-#define COMPAT_EXPORT extern __attribute__ ((visibility ("default")))
-#elif defined(_MSC_VER)
-#ifdef COMPAT_DLLEXPORT
-#define COMPAT_EXPORT __declspec(dllexport)
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(__WIN32__))
+#ifdef __GNUC__
+#define COMPAT_DLL_IMPORT __attribute__((dllimport)) extern
+#define COMPAT_DLL_EXPORT __attribute__((dllexport)) extern
 #else
-#define COMPAT_EXPORT __declspec(dllimport)
+#define COMPAT_DLL_IMPORT __declspec(dllimport)
+#define COMPAT_DLL_EXPORT __declspec(dllexport)
 #endif
+#ifdef COMPAT_BUILDING_DLL
+#define COMPAT_EXPORT COMPAT_DLL_EXPORT
+#else
+#define COMPAT_EXPORT COMPAT_DLL_IMPORT
+#endif
+#elif defined(__GNUC__) && __GNUC__ >= 4
+#define COMPAT_EXPORT extern __attribute__ ((visibility ("default")))
 #else
 #define COMPAT_EXPORT extern
 #endif
@@ -51,7 +58,7 @@
 #elif defined(_MSC_VER)
 #define COMPAT_RESTRICT __restrict
 #else
-#define COMPAT_RESTRICT
+#define COMPAT_RESTRICT restrict
 #endif
 
 #endif //COMPAT_TYPES_H
