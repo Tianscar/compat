@@ -7,6 +7,7 @@ Copy [the files](/compat) to your project and `#include` them. `#include` [compa
 Do not forget to reading the [notes](#notes-for-windows) below if you're developing for Windows!
 
 ## Notes for Windows
+For building external libraries (if required), see [tests](/CMakeLists.txt) as reference.
 ### dllexport
 You need to define `COMPAT_BUILDING_DLL` macro if you're building an executable or shared library.
 ### RegExp
@@ -18,7 +19,7 @@ If you want to use [threads.h](/compat/threads.h), you need to build [c11threads
 unless you're using win-pthread which you need to define `COMPAT_WINPTHREAD` macro.
 ### C99 standard types
 For MSVC `_MSC_VER` < 1800, the [headers](/compat/windows) for C99 standard types compatibility are force used.  
-You can also define `COMPAT_TYPES` manually to use them if you don't want to link against any c runtime library except `msvcrt.dll`.
+You can also define `COMPAT_TYPES` macro to use them if you don't want to link against any c runtime library except `msvcrt.dll`.
 
 ## License
 [The Unlicense (Public Domain Equivalent)](/LICENSE)
