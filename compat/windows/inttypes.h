@@ -2,6 +2,10 @@
  * ISO C9x  7.8 Format conversion of integer types <inttypes.h>
  */
 
+#if !defined(COMPAT_TYPES) && !(defined(_MSC_VER) && _MSC_VER < 0x708)
+#include <inttypes.h>
+#else
+
 #ifndef _INTTYPES_H_
 #define _INTTYPES_H_
 
@@ -26,7 +30,7 @@ typedef struct {
  * but understood by MS runtime functions.
  * crtdll.dll and msvcrt10.dll do not support any 64-bit modifier.
  */
-#ifdef COMPAT_UCRT
+#ifdef _UCRT
 #define PRId64 "lld"
 #define PRIi64 "lli"
 #define PRIo64 "llo"
@@ -246,7 +250,7 @@ typedef struct {
  #define SCNuPTR "u"
 #endif
 
-#ifdef COMPAT_UCRT
+#ifdef _UCRT
 /*
  * no length modifier for char types prior to C9x
  * MS runtime  scanf appears to treat "hh" as "h" 
@@ -273,7 +277,7 @@ typedef struct {
 #define SCNu8 "hhu"
 #define SCNuLEAST8 "hhu"
 #define SCNuFAST8 "hhu"
-#endif /* COMPAT_UCRT */
+#endif /* _UCRT */
 
 #if _MSC_VER < 0x200
 /*
@@ -320,27 +324,60 @@ typedef struct {
 #undef SCNuMAX
 #endif
 
-#if defined(__GNUC__) || defined(COMPAT_INTTYPES_FUNCTIONS)
-
 intmax_t __cdecl imaxabs (intmax_t j);
 imaxdiv_t __cdecl imaxdiv (intmax_t numer, intmax_t denom);
 
 /* 7.8.2 Conversion functions for greatest-width integer types */
 
 intmax_t __cdecl strtoimax (const char* __restrict nptr,
-                    char** __restrict endptr, int base);
+                            char** __restrict endptr, int base);
 uintmax_t __cdecl strtoumax (const char* __restrict nptr,
-                     char** __restrict endptr, int base);
+                             char** __restrict endptr, int base);
 
 intmax_t __cdecl wcstoimax (const wchar_t* __restrict nptr,
-                    wchar_t** __restrict endptr, int base);
+                            wchar_t** __restrict endptr, int base);
 uintmax_t __cdecl wcstoumax (const wchar_t* __restrict nptr,
-                     wchar_t** __restrict endptr, int base);
+                             wchar_t** __restrict endptr, int base);
 
-#endif /* __GNUC__ || COMPAT_INTTYPES_FUNCTIONS */
+#ifndef __GNUC__
+
+intmax_t __cdecl imaxabs (intmax_t j) {
+    return j >= 0 ? j : -j;
+}
+imaxdiv_t __cdecl imaxdiv (intmax_t numer, intmax_t denom) {
+    imaxdiv_t result;
+    result.quot = numer / denom;
+    result.rem = numer % denom;
+    return result;
+}
+
+#include <stdlib.h>
+#include <wchar.h>
+
+intmax_t __cdecl strtoimax (const char* __restrict nptr,
+                            char** __restrict endptr, int base) {
+    return _strtoi64(nptr, endptr, base);
+}
+uintmax_t __cdecl strtoumax (const char* __restrict nptr,
+                             char** __restrict endptr, int base) {
+    return _strtoui64(nptr, endptr, base);
+}
+
+intmax_t __cdecl wcstoimax (const wchar_t* __restrict nptr,
+                            wchar_t** __restrict endptr, int base) {
+    return _wcstoi64(nptr, endptr, base);
+}
+uintmax_t __cdecl wcstoumax (const wchar_t* __restrict nptr,
+                             wchar_t** __restrict endptr, int base) {
+    return _wcstoui64(nptr, endptr, base);
+}
+
+#endif /* __GNUC__ */
 
 #ifdef	__cplusplus
 }
 #endif
 
 #endif /* ndef _INTTYPES_H */
+
+#endif

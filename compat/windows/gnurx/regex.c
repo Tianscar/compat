@@ -59,7 +59,7 @@
 
 #include "regex.h"
 /* Extended regular expression matching and search library.
-   Copyright (C) 2002, 2003, 2004, 2005, 2007 Free Software Foundation, Inc.
+   Copyright (C) 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Isamu Hasegawa <isamu@yamato.ibm.com>.
 
@@ -87,6 +87,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if defined(__MINGW32_VERSION) || defined(_MSC_VER)
+#define strcasecmp stricmp
+#endif
+
 #if defined HAVE_LANGINFO_H || defined HAVE_LANGINFO_CODESET || defined _LIBC
 # include <langinfo.h>
 #endif
@@ -101,6 +105,8 @@
 #endif /* HAVE_WCTYPE_H || _LIBC */
 #if defined HAVE_STDBOOL_H || defined _LIBC
 # include <stdbool.h>
+#else
+# include "../stdbool.h"
 #endif /* HAVE_STDBOOL_H || _LIBC */
 #if defined HAVE_STDINT_H || defined _LIBC
 # include <stdint.h>
@@ -188,8 +194,8 @@
 # define __attribute(arg)
 #endif
 
-extern const char __re_error_msgid[] attribute_hidden;
-extern const size_t __re_error_msgid_idx[] attribute_hidden;
+COMPAT_EXTERN const char __re_error_msgid[] attribute_hidden;
+COMPAT_EXTERN const size_t __re_error_msgid_idx[] attribute_hidden;
 
 /* An integer used to represent a set of bits.  It must be unsigned,
    and must be at least as wide as unsigned int.  */
@@ -445,20 +451,18 @@ typedef struct re_dfa_t re_dfa_t;
 # endif
 #endif
 
-#ifndef NOT_IN_libc
 static reg_errcode_t re_string_realloc_buffers (re_string_t *pstr,
                                                 int new_buf_len)
 internal_function;
-# ifdef RE_ENABLE_I18N
+#ifdef RE_ENABLE_I18N
 static void build_wcs_buffer (re_string_t *pstr) internal_function;
 static int build_wcs_upper_buffer (re_string_t *pstr) internal_function;
-# endif /* RE_ENABLE_I18N */
+#endif /* RE_ENABLE_I18N */
 static void build_upper_buffer (re_string_t *pstr) internal_function;
 static void re_string_translate_buffer (re_string_t *pstr) internal_function;
 static unsigned int re_string_context_at (const re_string_t *input, int idx,
                                           int eflags)
 internal_function __attribute ((pure));
-#endif
 #define re_string_peek_byte(pstr, offset) \
   ((pstr)->mbs[(pstr)->cur_idx + offset])
 #define re_string_fetch_byte(pstr) \
@@ -476,8 +480,15 @@ internal_function __attribute ((pure));
 #define re_string_skip_bytes(pstr,idx) ((pstr)->cur_idx += (idx))
 #define re_string_set_index(pstr,idx) ((pstr)->cur_idx = (idx))
 
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
+#ifdef __GNUC__
+# define alloca(size)   __builtin_alloca (size)
+# define HAVE_ALLOCA 1
+#elif defined(_MSC_VER)
+# include <malloc.h>
+# define alloca _alloca
+# define HAVE_ALLOCA 1
+#else
+# error No alloca()
 #endif
 
 #ifndef _LIBC
@@ -796,16 +807,15 @@ re_string_wchar_at (const re_string_t *pstr, int idx)
   return (wint_t) pstr->wcs[idx];
 }
 
-# ifndef NOT_IN_libc
 static int
 internal_function __attribute ((pure))
 re_string_elem_size_at (const re_string_t *pstr, int idx)
 {
-#  ifdef _LIBC
+# ifdef _LIBC
   const unsigned char *p, *extra;
   const int32_t *table, *indirect;
   int32_t tmp;
-#   include <locale/weight.h>
+#  include <locale/weight.h>
   uint_fast32_t nrules = _NL_CURRENT_WORD (LC_COLLATE, _NL_COLLATE_NRULES);
 
   if (nrules != 0)
@@ -820,10 +830,9 @@ re_string_elem_size_at (const re_string_t *pstr, int idx)
       return p - pstr->mbs - idx;
     }
   else
-#  endif /* _LIBC */
+# endif /* _LIBC */
     return 1;
 }
-# endif
 #endif /* RE_ENABLE_I18N */
 
 #endif /*  _REGEX_INTERNAL_H */
@@ -2548,7 +2557,7 @@ create_cd_newstate (const re_dfa_t *dfa, const re_node_set *nodes,
 }
 
 /* Extended regular expression matching and search library.
-   Copyright (C) 2002,2003,2004,2005,2006,2007 Free Software Foundation, Inc.
+   Copyright (C) 2002,2003,2004,2005,2006 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Isamu Hasegawa <isamu@yamato.ibm.com>.
 
@@ -2835,8 +2844,7 @@ re_compile_fastmap (bufp)
 weak_alias (__re_compile_fastmap, re_compile_fastmap)
 #endif
 
-static inline void
-__attribute ((always_inline))
+COMPAT_FORCEINLINE void
 re_set_fastmap (char *fastmap, int icase, int ch)
 {
     fastmap[ch] = 1;
@@ -3353,14 +3361,6 @@ re_compile_internal (regex_t *preg, const char * pattern, size_t length,
 
 /* Initialize DFA.  We use the length of the regular expression PAT_LEN
    as the initial length of some arrays.  */
-
-#ifdef _MSC_VER
-#if _MSC_VER < 0x05dc
-#define strcasecmp strcmpi
-#else
-#define strcasecmp _stricmp
-#endif
-#endif
 
 static reg_errcode_t
 init_dfa (re_dfa_t *dfa, size_t pat_len)
@@ -5304,7 +5304,7 @@ parse_bracket_exp (re_string_t *regexp, re_dfa_t *dfa, re_token_t *token,
       return elem;
     }
 
-  /* Local function for parse_bracket_exp used in _LIBC environment.
+  /* Local function for parse_bracket_exp used in _LIBC environement.
      Look up the collation sequence value of BR_ELEM.
      Return the value if succeeded, UINT_MAX otherwise.  */
 
@@ -5328,8 +5328,7 @@ parse_bracket_exp (re_string_t *regexp, re_dfa_t *dfa, re_token_t *token,
 	}
       else if (br_elem->type == MB_CHAR)
 	{
-	  if (nrules != 0)
-	    return __collseq_table_lookup (collseqwc, br_elem->opr.wch);
+	  return __collseq_table_lookup (collseqwc, br_elem->opr.wch);
 	}
       else if (br_elem->type == COLL_SYM)
 	{
@@ -5577,7 +5576,7 @@ parse_bracket_exp (re_string_t *regexp, re_dfa_t *dfa, re_token_t *token,
 #endif /* not RE_ENABLE_I18N */
         non_match = 1;
         if (syntax & RE_HAT_LISTS_NOT_NEWLINE)
-            bitset_set (sbcset, '\n');
+            bitset_set (sbcset, '\0');
         re_string_skip_bytes (regexp, token_len); /* Skip a token.  */
         token_len = peek_token_bracket (token, regexp, syntax);
         if (BE (token->type == END_OF_RE, 0))
@@ -5935,7 +5934,7 @@ build_equiv_class (bitset_t sbcset, const unsigned char *name)
 
       /* Build single byte matcing table for this equivalence class.  */
       char_buf[1] = (unsigned char) '\0';
-      len = weights[idx1 & 0xffffff];
+      len = weights[idx1];
       for (ch = 0; ch < SBC_MAX; ++ch)
 	{
 	  char_buf[0] = ch;
@@ -5947,15 +5946,11 @@ build_equiv_class (bitset_t sbcset, const unsigned char *name)
 	  if (idx2 == 0)
 	    /* This isn't a valid character.  */
 	    continue;
-	  /* Compare only if the length matches and the collation rule
-	     index is the same.  */
-	  if (len == weights[idx2 & 0xffffff] && (idx1 >> 24) == (idx2 >> 24))
+	  if (len == weights[idx2])
 	    {
 	      int cnt = 0;
-
 	      while (cnt <= len &&
-		     weights[(idx1 & 0xffffff) + 1 + cnt]
-		     == weights[(idx2 & 0xffffff) + 1 + cnt])
+		     weights[idx1 + 1 + cnt] == weights[idx2 + 1 + cnt])
 		++cnt;
 
 	      if (cnt > len)
@@ -6111,7 +6106,11 @@ build_charclass_op (re_dfa_t *dfa, RE_TRANSLATE_TYPE trans,
     if (non_match)
     {
 #ifdef RE_ENABLE_I18N
-        mbcset->non_match = 1;
+        /*
+      if (syntax & RE_HAT_LISTS_NOT_NEWLINE)
+	bitset_set(cset->sbcset, '\0');
+      */
+      mbcset->non_match = 1;
 #endif /* not RE_ENABLE_I18N */
     }
 
@@ -6358,7 +6357,7 @@ duplicate_tree (const bin_tree_t *root, re_dfa_t *dfa)
 }
 
 /* Extended regular expression matching and search library.
-   Copyright (C) 2002, 2003, 2004, 2005, 2007 Free Software Foundation, Inc.
+   Copyright (C) 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Isamu Hasegawa <isamu@yamato.ibm.com>.
 
@@ -7380,8 +7379,8 @@ prune_impossible_nodes (mctx)
    We must select appropriate initial state depending on the context,
    since initial states may have constraints like "\<", "^", etc..  */
 
-static inline re_dfastate_t *
-__attribute ((always_inline)) internal_function
+COMPAT_FORCEINLINE re_dfastate_t *
+internal_function
 acquire_init_state_context (reg_errcode_t *err, const re_match_context_t *mctx,
                             int idx)
 {
@@ -7772,9 +7771,9 @@ set_regs (const regex_t *preg, const re_match_context_t *mctx, size_t nmatch,
     cur_node = dfa->init_node;
     re_node_set_init_empty (&eps_via_nodes);
 
-    //if (__libc_use_alloca (nmatch * sizeof (regmatch_t)))
-    //    prev_idx_match = (regmatch_t *) alloca (nmatch * sizeof (regmatch_t));
-    //else
+    if (__libc_use_alloca (nmatch * sizeof (regmatch_t)))
+        prev_idx_match = (regmatch_t *) alloca (nmatch * sizeof (regmatch_t));
+    else
     {
         prev_idx_match = re_malloc (regmatch_t, nmatch);
         if (prev_idx_match == NULL)
@@ -9253,7 +9252,7 @@ check_arrival (re_match_context_t *mctx, state_array_t *path, int top_node,
                 sizeof (re_dfastate_t *) * (path->alloc - old_alloc));
     }
 
-    str_idx = path->next_idx ? path->next_idx : top_str;
+    str_idx = path->next_idx ?: top_str;
 
     /* Temporary modify MCTX.  */
     backup_state_log = mctx->state_log;
@@ -9674,9 +9673,9 @@ build_trtable (const re_dfa_t *dfa, re_dfastate_t *state)
        from `state'.  `dests_node[i]' represents the nodes which i-th
        destination state contains, and `dests_ch[i]' represents the
        characters which i-th destination state accepts.  */
-    //if (__libc_use_alloca (sizeof (struct dests_alloc)))
-    //    dests_alloc = (struct dests_alloc *) alloca (sizeof (struct dests_alloc));
-    //else
+    if (__libc_use_alloca (sizeof (struct dests_alloc)))
+        dests_alloc = (struct dests_alloc *) alloca (sizeof (struct dests_alloc));
+    else
     {
         dests_alloc = re_malloc (struct dests_alloc, 1);
         if (BE (dests_alloc == NULL, 0))
@@ -9710,11 +9709,11 @@ build_trtable (const re_dfa_t *dfa, re_dfastate_t *state)
     if (BE (err != REG_NOERROR, 0))
         goto out_free;
 
-    //if (__libc_use_alloca ((sizeof (re_node_set) + sizeof (bitset_t)) * SBC_MAX
-    //                       + ndests * 3 * sizeof (re_dfastate_t *)))
-    //    dest_states = (re_dfastate_t **)
-    //            alloca (ndests * 3 * sizeof (re_dfastate_t *));
-    //else
+    if (__libc_use_alloca ((sizeof (re_node_set) + sizeof (bitset_t)) * SBC_MAX
+                           + ndests * 3 * sizeof (re_dfastate_t *)))
+        dest_states = (re_dfastate_t **)
+                alloca (ndests * 3 * sizeof (re_dfastate_t *));
+    else
     {
         dest_states = (re_dfastate_t **)
                 malloc (ndests * 3 * sizeof (re_dfastate_t *));
@@ -10184,6 +10183,7 @@ check_node_accept_bytes (const re_dfa_t *dfa, int node_idx,
 	  const int32_t *table, *indirect;
 	  const unsigned char *weights, *extra;
 	  const char *collseqwc;
+	  int32_t idx;
 	  /* This #include defines a local function!  */
 #  include <locale/weight.h>
 
@@ -10241,20 +10241,15 @@ check_node_accept_bytes (const re_dfa_t *dfa, int node_idx,
 		_NL_CURRENT (LC_COLLATE, _NL_COLLATE_EXTRAMB);
 	      indirect = (const int32_t *)
 		_NL_CURRENT (LC_COLLATE, _NL_COLLATE_INDIRECTMB);
-	      int32_t idx = findidx (&cp);
+	      idx = findidx (&cp);
 	      if (idx > 0)
 		for (i = 0; i < cset->nequiv_classes; ++i)
 		  {
 		    int32_t equiv_class_idx = cset->equiv_classes[i];
-		    size_t weight_len = weights[idx & 0xffffff];
-		    if (weight_len == weights[equiv_class_idx & 0xffffff]
-			&& (idx >> 24) == (equiv_class_idx >> 24))
+		    size_t weight_len = weights[idx];
+		    if (weight_len == weights[equiv_class_idx])
 		      {
 			int cnt = 0;
-
-			idx &= 0xffffff;
-			equiv_class_idx &= 0xffffff;
-
 			while (cnt <= weight_len
 			       && (weights[equiv_class_idx + 1 + cnt]
 				   == weights[idx + 1 + cnt]))

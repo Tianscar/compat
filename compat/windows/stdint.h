@@ -2,6 +2,10 @@
  * ISO C9x  7.18  Integer types <stdint.h>
  */
 
+#if !defined(COMPAT_TYPES) && !(defined(_MSC_VER) && _MSC_VER < 0x708)
+#include <stdint.h>
+#else
+
 #ifndef _STDINT_H
 #define _STDINT_H
 
@@ -187,3 +191,5 @@ typedef unsigned __int64   uintmax_t;
 #endif  /* !defined ( __cplusplus) || defined __STDC_CONSTANT_MACROS */
 
 #endif  /* _STDINT_H */
+
+#endif

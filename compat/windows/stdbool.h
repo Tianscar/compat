@@ -2,6 +2,10 @@
  * ISO C Standard:  7.16  Boolean type and values  <stdbool.h>
  */
 
+#if !defined(COMPAT_TYPES) && !(defined(_MSC_VER) && _MSC_VER < 0x708)
+#include <stdbool.h>
+#else
+
 #ifndef _STDBOOL_H
 #define _STDBOOL_H
 
@@ -21,3 +25,5 @@
 #define __bool_true_false_are_defined	1
 
 #endif	/* _STDBOOL_H */
+
+#endif

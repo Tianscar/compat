@@ -2,6 +2,10 @@
  * ISO C Standard:  7.17  Common definitions  <stddef.h>
  */
 
+#if !defined(COMPAT_TYPES) && !(defined(_MSC_VER) && _MSC_VER < 0x708)
+#include <stddef.h>
+#else
+
 #if (!defined(_STDDEF_H) && !defined(_STDDEF_H_) && !defined(_ANSI_STDDEF_H) \
      && !defined(__STDDEF_H__)) \
     || defined(__need_wchar_t) || defined(__need_size_t) \
@@ -378,13 +382,18 @@ typedef __WCHAR_TYPE__ wchar_t;
 
 #ifdef _STDDEF_H
 
-#if !defined(COMPAT_UCRT) && !defined(offsetof)
+#ifndef offsetof
+#ifdef __GNUC__
+/* Offset of member MEMBER in a struct of type TYPE. */
+#define offsetof(TYPE, MEMBER) __builtin_offsetof (TYPE, MEMBER)
+#else
 #ifdef __cplusplus
 /* Offset of member MEMBER in a struct of type TYPE. */
 #define offsetof(TYPE, MEMBER) (size_t)&reinterpret_cast<const volatile char&>((((TYPE *)0)->MEMBER))
 #else
 /* Offset of member MEMBER in a struct of type TYPE. */
 #define offsetof(TYPE, MEMBER) ((size_t) ( (char *)&((TYPE *)(0))->MEMBER - (char *)0 ))
+#endif
 #endif
 #endif
 
@@ -407,3 +416,4 @@ typedef struct {
 #endif /* !_STDDEF_H && !_STDDEF_H_ && !_ANSI_STDDEF_H && !__STDDEF_H__
 	  || __need_XXX was not defined before */
 
+#endif
